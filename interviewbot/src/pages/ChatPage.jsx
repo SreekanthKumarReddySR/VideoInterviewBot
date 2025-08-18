@@ -12,7 +12,7 @@ function ChatPage() {
   const [videoChunks, setVideoChunks] = useState([]);
   const videoRef = useRef(null);
   const [currentQuestion, setCurrentQuestion] = useState(""); // Store question text
-
+  const API_URL = process.env.REACT_APP_API_URL;
   // Start interview - Ask role
   const startInterview = () => {
     setMessages([{ sender: "bot", text: "Please enter the Job Role:" }]);
@@ -67,7 +67,7 @@ function ChatPage() {
     formData.append("question", currentQuestion);
 
     try {
-      const res = await axios.post("http://localhost:5000/upload-answer", formData, {
+      const res = await axios.post(`${API_URL}/upload-answer`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -109,7 +109,7 @@ Scores - Relevance: ${res.data.evaluation.scores.relevance}, Clarity: ${res.data
 
     if (step === "description") {
       try {
-        const res = await axios.post("http://localhost:5000/start-interview", {
+        const res = await axios.post(`${API_URL}/start-interview`, {
           jobRole: newMessages[0].text,
           jobDescription: userInput
         });
@@ -127,7 +127,7 @@ Scores - Relevance: ${res.data.evaluation.scores.relevance}, Clarity: ${res.data
   // End interview & show report
   const endInterview = async () => {
     try {
-      const res = await axios.post("http://localhost:5000/generate-report");
+      const res = await axios.post(`${API_URL}/generate-report`);
       setReport(res.data);
       setStep("report");
     } catch (err) {
@@ -228,7 +228,7 @@ Scores - Relevance: ${res.data.evaluation.scores.relevance}, Clarity: ${res.data
                 setVideoChunks([]);
                 setMediaRecorder(null);
                 // Clear interview history on backend
-                axios.post("http://localhost:5000/start-interview", {
+                axios.post(`${API_URL}/start-interview`, {
                   jobRole: "",
                   jobDescription: ""
                 });
