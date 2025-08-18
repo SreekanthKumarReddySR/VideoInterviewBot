@@ -74,9 +74,17 @@ function ChatPage() {
       console.log("✅ Uploaded:", res.data);
 
       // Show evaluation feedback
-      const evaluationMsg = `Feedback: ${res.data.evaluation.feedback}
-Scores - Relevance: ${res.data.evaluation.scores.relevance}, Clarity: ${res.data.evaluation.scores.clarity}, Correctness: ${res.data.evaluation.scores.correctness}`;
-      setMessages(prev => [...prev, { sender: "bot", text: evaluationMsg }]);
+      // ...inside uploadVideo...
+      if (res.data && res.data.evaluation) {
+        const evaluationMsg = `Feedback: ${res.data.evaluation.feedback}
+      Scores - Relevance: ${res.data.evaluation.scores.relevance}, Clarity: ${res.data.evaluation.scores.clarity}, Correctness: ${res.data.evaluation.scores.correctness}`;
+        setMessages(prev => [...prev, { sender: "bot", text: evaluationMsg }]);
+      } else if (res.data && res.data.error) {
+        setMessages(prev => [...prev, { sender: "bot", text: `⚠️ ${res.data.error}` }]);
+      } else {
+        setMessages(prev => [...prev, { sender: "bot", text: "⚠️ Unexpected server response." }]);
+      }
+// ...existing code...
 
       // Move to next question
       if (res.data.nextQuestion && res.data.nextQuestion.trim() !== "") {
