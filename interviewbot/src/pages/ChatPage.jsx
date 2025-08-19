@@ -70,6 +70,7 @@ function ChatPage() {
       const res = await axios.post(`${API_URL}/upload-answer`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      
 
       console.log("✅ Uploaded:", res.data);
 

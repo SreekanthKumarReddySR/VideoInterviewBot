@@ -33,7 +33,29 @@ let interviewContext = {
   jobDescription: "",
   history: [] // { question, answer, evaluation }
 };
+// filepath: c:\Users\Admin\Downloads\vid-interview-bot\backend\server.js
 
+// ...existing code...
+
+async function transcribeAudio(filePath) {
+  const client = new speech.SpeechClient();
+  const file = fs.readFileSync(filePath);
+  const audioBytes = file.toString("base64");
+
+  const audio = { content: audioBytes };
+  const config = {
+    encoding: "LINEAR16",
+    sampleRateHertz: 44100,
+    languageCode: "en-US",
+  };
+  const request = { audio, config };
+
+  const [response] = await client.recognize(request);
+  const transcription = response.results
+    .map(result => result.alternatives[0].transcript)
+    .join("\n");
+  return transcription;
+}
 const res=await generateText("Hello from the backend!");
 console.log("Generated text", res);
 // ---- Gemini helper ----
